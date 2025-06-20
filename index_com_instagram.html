@@ -1,0 +1,279 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DropCaixas</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #f2f2f2, #e8e8e8);
+      color: #333;
+    }
+    header {
+      background: #fff7e6;
+      border-bottom: 2px solid #ffcc80;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header strong {
+      font-size: 1.8rem;
+      color: #a8651a;
+    }
+    .logo {
+      height: 50px;
+      border-radius: 8px;
+    }
+    .card {
+      background: #fffaf3;
+      border: 1px solid #e0c49a;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      transition: transform 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #a8651a;
+      margin-bottom: 0.5rem;
+    }
+    .btn-link {
+      background: #28a745;
+    }
+    .pagamento {
+      background: #fffaf3;
+      border-color: #e0c49a;
+    }
+    footer {
+      background: #fff7e6;
+      border-top: 2px solid #ffcc80;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+    }
+    input, button {
+      font-family: 'Inter', sans-serif;
+    }
+    body { font-family: sans-serif; margin: 0; padding: 0; background: #f9f9f9; color: #333; }
+    header, footer { background: #fff; padding: 1rem; border-bottom: 1px solid #ddd; }
+    h1 { margin: 0; font-size: 1.5rem; }
+    .logo { height: 40px; vertical-align: middle; margin-right: 10px; }
+    .container { padding: 1rem; }
+    .produtos, .formulario { margin-top: 2rem; }
+    .categoria { margin-top: 1.5rem; }
+    .card { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; }
+    img.produto { max-width: 100%; border-radius: 6px; height: 150px; object-fit: cover; }
+    button { background: #008000; color: white; border: none; padding: 0.5rem 1rem; margin-top: 0.5rem; cursor: pointer; border-radius: 4px; }
+    input, select { padding: 0.5rem; margin-top: 0.5rem; width: 100%; border: 1px solid #ccc; border-radius: 4px; }
+    .btn-link { text-decoration: none; background: #25d366; display: inline-block; margin-top: 1rem; padding: 0.5rem 1rem; color: white; border-radius: 4px; text-align: center; }
+  </style>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous">
+    let carrinho = [];
+
+    function addToCart(id) {
+      const qtd = parseInt(document.getElementById('qtd' + id).value);
+      if (qtd >= 100) {
+        const produtos = {
+          1: { nome: 'Caixa 16x11x6', preco: 0.48 },
+          2: { nome: 'Caixa 19x12x12', preco: 1.03 },
+          3: { nome: 'Caixa 20x20x20', preco: 1.75 },
+          4: { nome: 'Caixa 24x15x10', preco: 2.15 },
+          5: { nome: 'Caixa 30x20x20', preco: 2.11 },
+        };
+        const item = produtos[id];
+        const existente = carrinho.find(p => p.nome === item.nome);
+        if (existente) {
+          existente.qtd += qtd;
+        } else {
+          carrinho.push({ ...item, qtd });
+        }
+        renderCarrinho();
+      } else {
+        alert('Quantidade mínima é 100 unidades.');
+      }
+    }
+
+    function renderCarrinho() {
+      const container = document.getElementById('resumoCarrinho');
+      container.innerHTML = '';
+      let total = 0;
+      carrinho.forEach(p => {
+        const subtotal = (p.qtd * p.preco).toFixed(2);
+        total += parseFloat(subtotal);
+        const div = document.createElement('div');
+        div.textContent = `• ${p.nome} - ${p.qtd} un. = R$ ${subtotal}`;
+        container.appendChild(div);
+      });
+      const totalDiv = document.createElement('div');
+      totalDiv.style.fontWeight = 'bold';
+      totalDiv.style.marginTop = '0.5rem';
+      totalDiv.textContent = `Total: R$ ${total.toFixed(2)}`;
+      container.appendChild(totalDiv);
+    }
+
+    function gerarPedido() {
+      const nome = document.getElementById('nome').value;
+      const cidade = document.getElementById('cidade').value;
+      let texto = 'Olá! Gostaria de fazer um pedido:%0A%0A';
+      let total = 0;
+      carrinho.forEach(p => {
+        const subt = (p.qtd * p.preco).toFixed(2);
+        total += parseFloat(subt);
+        texto += `• ${p.nome} - ${p.qtd} un. = R$ ${subt}%0A`;
+      });
+      texto += `%0ATotal: R$ ${total.toFixed(2)}%0A`;
+      texto += `Nome: ${nome}%0ACidade: ${cidade}`;
+      const link = `https://wa.me/5517991142239?text=${texto}`;
+      window.open(link, '_blank');
+    }
+    </script>
+</head>
+<body>
+  <header>
+    <img src="dropcaixas.jpg" alt="Logo" class="logo"/>
+    <strong><i class="fas fa-box-open" style="margin-right: 8px; color:#a8651a;"></i>DropCaixas</strong>
+  </header>
+  <div class="container">
+    <section class="produtos" style="display: flex; flex-direction: column; gap: 2rem;">
+      <h2><i class="fas fa-cube" style="margin-right:6px;"></i>Caixas Pequenas</h2><div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+
+      <div class="card">
+        <img src="ChatGPT Image 20 de jun. de 2025, 10_18_17.png" class="produto" alt="Caixa 16x11x6" />
+        <p>Caixa 16x11x6 - R$ 0,48 (mín. 100)</p>
+        <input type="number" min="100" value="100" id="qtd1" /><button onclick="addToCart(1)">Adicionar</button>
+      </div>
+      <div class="card">
+        <img src="ChatGPT Image 20 de jun. de 2025, 10_18_27.png" class="produto" alt="Caixa 19x12x12" />
+        <p>Caixa 19x12x12 - R$ 1,03 (mín. 100)</p>
+        <input type="number" min="100" value="100" id="qtd2" /><button onclick="addToCart(2)">Adicionar</button>
+      </div>
+
+      </div><h2 class="categoria"><i class="fas fa-boxes" style="margin-right:6px;"></i>Caixas Médias</h2><div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+
+      <div class="card">
+        <img src="ChatGPT Image 20 de jun. de 2025, 10_18_23.png" class="produto" alt="Caixa 20x20x20" />
+        <p>Caixa 20x20x20 - R$ 1,75 (mín. 100)</p>
+        <input type="number" min="100" value="100" id="qtd3" /><button onclick="addToCart(3)">Adicionar</button>
+      </div>
+      <div class="card">
+        <img src="ChatGPT Image 20 de jun. de 2025, 10_18_20.png" class="produto" alt="Caixa 24x15x10" />
+        <p>Caixa 24x15x10 - R$ 2,15 (mín. 100)</p>
+        <input type="number" min="100" value="100" id="qtd4" /><button onclick="addToCart(4)">Adicionar</button>
+      </div>
+      <div class="card">
+        <img src="img_30x20x20_corrigida.jpg" class="produto" alt="Caixa 30x20x20" />
+        <p>Caixa 30x20x20 - R$ 2,11 (mín. 100)</p>
+        <input type="number" min="100" value="100" id="qtd5" /><button onclick="addToCart(5)">Adicionar</button>
+      </div>
+    </div></section>
+
+    <section class="formulario">
+      <h2><i class="fas fa-file-invoice-dollar" style="margin-right:6px;"></i>Finalizar Pedido</h2>
+      <input type="text" id="nome" placeholder="Seu nome" required />
+      <input type="text" id="cidade" placeholder="Cidade e Estado" required />
+      <a id="whatsappLink" class="btn-link" onclick="gerarPedido()">Enviar pedido via WhatsApp</a>
+    </section>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 DropCaixas. Todos os direitos reservados.</p>
+    <div style="margin-top: 0.5rem;">
+      <a href="https://www.instagram.com/dropcaixas/?igsh=MWZ4ZW9nbDgwejc2YQ%3D%3D" target="_blank" style="color:#a8651a; text-decoration: none;">
+        <i class="fab fa-instagram" style="margin-right:6px;"></i> @dropcaixas
+      </a>
+    </div>
+
+  </footer>
+
+  <script>
+    function gerarPedido() {
+      const produtos = [
+        { nome: 'Caixa 16x11x6', preco: 0.48, qtd: parseInt(document.getElementById('qtd1').value) },
+        { nome: 'Caixa 19x12x12', preco: 1.03, qtd: parseInt(document.getElementById('qtd2').value) },
+        { nome: 'Caixa 20x20x20', preco: 1.75, qtd: parseInt(document.getElementById('qtd3').value) },
+        { nome: 'Caixa 24x15x10', preco: 2.15, qtd: parseInt(document.getElementById('qtd4').value) },
+        { nome: 'Caixa 30x20x20', preco: 2.11, qtd: parseInt(document.getElementById('qtd5').value) },
+      ];
+      const nome = document.getElementById('nome').value;
+      const cidade = document.getElementById('cidade').value;
+
+      let texto = 'Olá! Gostaria de fazer um pedido:%0A%0A';
+      let total = 0;
+      produtos.forEach(p => {
+        if (p.qtd >= 100) {
+          const subt = (p.qtd * p.preco).toFixed(2);
+          total += parseFloat(subt);
+          texto += `• ${p.nome} - ${p.qtd} un. = R$ ${subt}%0A`;
+        }
+      });
+      texto += `%0ATotal: R$ ${total.toFixed(2)}%0A`;
+      texto += `Nome: ${nome}%0ACidade: ${cidade}`;
+      const link = `https://wa.me/5517991142239?text=${texto}`;
+      window.open(link, '_blank');
+    }
+  
+    let carrinho = [];
+
+    function addToCart(id) {
+      const qtd = parseInt(document.getElementById('qtd' + id).value);
+      if (qtd >= 100) {
+        const produtos = {
+          1: { nome: 'Caixa 16x11x6', preco: 0.48 },
+          2: { nome: 'Caixa 19x12x12', preco: 1.03 },
+          3: { nome: 'Caixa 20x20x20', preco: 1.75 },
+          4: { nome: 'Caixa 24x15x10', preco: 2.15 },
+          5: { nome: 'Caixa 30x20x20', preco: 2.11 },
+        };
+        const item = produtos[id];
+        const existente = carrinho.find(p => p.nome === item.nome);
+        if (existente) {
+          existente.qtd += qtd;
+        } else {
+          carrinho.push({ ...item, qtd });
+        }
+        renderCarrinho();
+      } else {
+        alert('Quantidade mínima é 100 unidades.');
+      }
+    }
+
+    function renderCarrinho() {
+      const container = document.getElementById('resumoCarrinho');
+      container.innerHTML = '';
+      let total = 0;
+      carrinho.forEach(p => {
+        const subtotal = (p.qtd * p.preco).toFixed(2);
+        total += parseFloat(subtotal);
+        const div = document.createElement('div');
+        div.textContent = `• ${p.nome} - ${p.qtd} un. = R$ ${subtotal}`;
+        container.appendChild(div);
+      });
+      const totalDiv = document.createElement('div');
+      totalDiv.style.fontWeight = 'bold';
+      totalDiv.style.marginTop = '0.5rem';
+      totalDiv.textContent = `Total: R$ ${total.toFixed(2)}`;
+      container.appendChild(totalDiv);
+    }
+
+    function gerarPedido() {
+      const nome = document.getElementById('nome').value;
+      const cidade = document.getElementById('cidade').value;
+      let texto = 'Olá! Gostaria de fazer um pedido:%0A%0A';
+      let total = 0;
+      carrinho.forEach(p => {
+        const subt = (p.qtd * p.preco).toFixed(2);
+        total += parseFloat(subt);
+        texto += `• ${p.nome} - ${p.qtd} un. = R$ ${subt}%0A`;
+      });
+      texto += `%0ATotal: R$ ${total.toFixed(2)}%0A`;
+      texto += `Nome: ${nome}%0ACidade: ${cidade}`;
+      const link = `https://wa.me/5517991142239?text=${texto}`;
+      window.open(link, '_blank');
+    }
+    </script>
+</body>
+</html>
